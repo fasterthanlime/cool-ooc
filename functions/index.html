@@ -239,7 +239,7 @@ f(|n| (1..(n+1)) reduce(|elem, acc| elem*acc) toString() println(), 5)
     
     <p>In English, <strong>f</strong> is a function that takes a total of two parameters and returns nothing (it performs IO instead). The first parameter is of type <strong>Func</strong>, a function that, in this case, takes an <strong>Int</strong> as a parameter. The second parameter to our <strong>f</strong> function takes an <strong>Int</strong>. In the body of <strong>f</strong>, we call the function passed to <strong>f</strong> with the value of our second parameter.</p>
 
-    <p>The call to <strong>f</strong> uses ooc's closure syntax (also known as ACS, or Amazing Closure Syntax) to create an anonymous function that takes one parameter <strong>n</strong>, as denoted within <code>| |</code>, and create a range which it will reduce to a single value, the product of all the values in the list. reduce, also known as inject in Ruby and foldl in Haskell, is a common and useful functional construct that supports unique iteration and accumulation through list-like data structures.</p>
+    <p>The call to <strong>f</strong> uses ooc's closure syntax to create an anonymous function that takes one parameter <strong>n</strong>, as denoted within <code>| |</code>, and create a range which it will reduce to a single value, the product of all the values in the list. reduce, also known as inject in Ruby and foldl in Haskell, is a common and useful functional construct that supports unique iteration and accumulation through list-like data structures.</p>
 
   </div>
 </div>
