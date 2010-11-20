@@ -1,0 +1,248 @@
+---
+layout: reference
+---
+
+<div class="box">
+  <h2>
+    Functions
+  </h2>
+  <div class="block">
+    <p>
+    ooc allows for flexible function definition and manipulation. You can pass functions around as parameters to other functions, define behavior for parameters of generic types, and even interface with functions written in C. Such control enables composition of powerful code without sacrificing readability and modularity.
+    </p>
+
+  </div>
+</div>
+
+<div class="box">
+  <h2>
+    <a name="main">main</a>
+    <span class="desc">the entry point</span>
+  </h2>
+
+  <div class="block">
+    <p>
+    The <strong>main</strong> function is the entry point of the program. In most low level programming languages such as C, Java, and Haskell, the main function is written by the programmer and organizes functionality of the rest of the program. Optionally, it could take input supplied as command line arguments. Same for ooc:
+    </p>
+    
+    {% highlight ooc %}main: func (argc: Int, argv: String*) -> Int{% endhighlight %}
+
+    <p>
+      Just like in Ruby and other high level programming languages, ooc does not require an explicit <strong>main</strong>. If no <strong>main</strong> function is supplied, one will be created for you during compilation.
+    </p>
+    
+    <p>
+      ooc also supports writing the <strong>main</strong> function using an <strong>ArrayList</strong>, a more intuitive approach to iterate through the parameters:
+    </p>
+    
+{% highlight ooc %}
+main: func (params: ArrayList<String>) {
+  params each(|param| param println())
+}
+{% endhighlight %}
+
+  </div>
+</div>
+
+<div class="box">
+  <h2>
+    <a name="declaring">declaring</a>
+    <span class="desc">types of function declarations</span>
+  </h2>
+
+  <div class="block">
+    <p>In ooc, function declarations are flexible. They consist of arguments, return value(s), suffix (for overloading), and several special keywords. Usage of all these parts is optional.
+    </p>
+    
+    <p>Named functions are declared with this syntax:</p>
+    
+{% highlight ooc %}
+<name> : func <arguments> <return type> {
+  <body>
+}
+{% endhighlight %}
+
+    <p>A function with no arguments or return type:</p>
+    
+{% highlight ooc %}
+f: func { "hello world" println() }
+f()
+{% endhighlight %}
+
+    <p>A function with 1 argument and no return type:</p>
+    
+{% highlight ooc %}
+f: func (name: String) {
+  if (name == "Mark") "Guess what? My name is %s too!" printfln(name)
+}
+f("Mark")
+{% endhighlight %}
+
+    <p>A function with no arguments and 1 return type:</p>
+    
+{% highlight ooc %}
+f: func -> String {
+  word := "lla"
+  word + "ma"
+}
+f() println()
+{% endhighlight %}
+
+<p class="nutshell">
+<strong>Note!</strong> The last expression in the function is automatically returned
+</p>
+
+    <p>To overload functions, use a ~ followed by an identifier name:</p>
+    
+{% highlight ooc %}
+f: func (val: Int) { (val/3) toString() println() }
+f: func ~withFloat (val: Float) { (val/3) toString() println() }
+
+f(5)
+f(5.0)
+f ~withFloat(5)
+{% endhighlight %}
+
+<p class="nutshell">
+<strong>Note!</strong> We can explicitly specify which function to call
+</p>
+
+    <p>To call functions defined in other files, use <code>extern</code>:</p>
+    
+{% highlight ooc %}
+fork: extern func -> Int
+createProcess: extern(fork) func -> Int // Same function, but with a different name
+{% endhighlight %}
+
+  <p>
+    You can also use these qualifiers before the <code>func</code> keyword:
+    <ul>
+      <li><code>static</code>: Just like Java static</li>
+      <li><code>proto</code>: Adds function prototypes in the generated C file (e.g. when you’re missing a header)</li>
+      <li><code>inline</code>: Just like C inline (Hint to the compiler to make calling this function faster, usually by substituting calls to this function with the actual code of the function. It’s generally used for functions that will be called very often)</li>
+      <li><code>unmangled</code>: reserve function type as is without wrapping (common when interfacing with C)</li>
+    </ul>
+  </p>
+
+  </div>
+</div>
+
+<div class="box">
+  <h2>
+    <a name="generic">generic</a>
+    <span class="desc">functions that deal with no specific types</span>
+  </h2>
+
+  <div class="block">
+    <p>Let us look at how we can create functions that deal with generic types:</p>
+
+{% highlight ooc %}
+identity: func <T> (val: T) -> T {
+  val
+}{% endhighlight %}
+
+    <p>Here, we declare a function called <strong>identity</strong>, with one type parameter called <strong>T</strong>, taking one parameter called <strong>val</strong>, and returning a value of type <strong>T</strong>.
+    </p>
+    
+    <p>Type parameters are the names listed between the angle brackets. You can have as many as you want, though if you more than just a few, reconsider the design and purpose of your function.</p>
+
+  </div>
+</div>
+
+<div class="box">
+  <h2>
+    <a name="firstclass">first-class</a>
+    <span class="desc">functions treated as independent values</span>
+  </h2>
+
+  <div class="block">
+
+    <p>A first-class function, just like <strong>1</strong>, <strong>“hello”</strong>, and <strong>5.0</strong>, is a literal piece of data. It can be stored and passed around (even as parameters to other functions). Let us take a look at the main differences between functions and first-class functions.
+    </p>
+    
+    <p>Function are immutable. First-class functions are variables, and thus can be overwritten through assignment:</p>
+    
+{% highlight ooc %}
+// this is invalid
+someFunc: func {}
+someFunc = someOtherFunc
+
+// this is valid
+someFunc := func {}
+someFunc = someOtherFunc
+{% endhighlight %}
+
+    <p>First-class functions can capture context; they are called closures, or anonymous functions:</p>
+    
+{% highlight ooc %}
+// here's a normal function
+clone: func (l: List<Int>) -> List<Int> {
+  copy := ArrayList<Int> new(l size())
+  l each(func(element: Int) {
+    copy add(element)
+  })
+  copy
+}
+{% endhighlight %}
+
+    <p>Here, our anonymous, first-class function which also happens to be a closure is:</p>
+    
+{% highlight ooc %}
+func(element: Int) {
+    copy add(element)
+}
+{% endhighlight %}
+
+
+    <p>It captures the context because we access copy in it - which isn't an argument of the function, nor a variable declared inside the function. It's declared outside, and still we can access it - that's what capturing context is.</p>
+    
+    
+    <p>You may be wondering by now what is the type of such first-class functions? So, when we do:</p>
+    
+{% highlight ooc %}
+max := func (a, b: Int) -> Int {
+  a > b ? a : b
+}
+{% endhighlight %}
+
+    <p>What exactly is the type of <strong>max</strong>?</p>
+    
+    <p>Let us break the definition into two steps:</p>
+    
+{% highlight ooc %}
+max : Func (Int, Int) -> Int
+max = func (a, b: Int) -> Int {
+    a > b ? a : b
+}
+{% endhighlight %}
+
+    <p><strong>Func</strong> is a type that has special syntax:</p>
+    
+{% highlight ooc %}
+Func <argument types> <return type>
+{% endhighlight %}
+
+    <p>As with regular functions declaration, both argument types and return types can be omitted.</p>
+      
+    <p>We could of also written the anonymous function using ooc's awesome closure syntax, or ACS:</p>
+    
+{% highlight ooc %}
+|element| copy add(element)
+{% endhighlight %}
+
+    <p>As you can see, using ACS infers the type of the arguments, allowing for less-redundant code. Let's take a look at another example of calling functions with closures</p>
+    
+{% highlight ooc %}
+f: func(fun: Func(Int), n: Int) { fun(n) }
+f(|n| (1..(n+1)) reduce(|elem, acc| elem*acc) toString() println(), 5)
+{% endhighlight %}
+    
+    <p>In English, <strong>f</strong> is a function that takes a total of two parameters and returns nothing (it performs IO instead). The first parameter is of type <strong>Func</strong>, a function that, in this case, takes an <strong>Int</strong> as a parameter. The second parameter to our <strong>f</strong> function takes an <strong>Int</strong>. In the body of <strong>f</strong>, we call the function passed to <strong>f</strong> with the value of our second parameter.</p>
+
+    <p>The call to <strong>f</strong> uses ooc's closure syntax (also known as ACS, or Amazing Closure Syntax) to create an anonymous function that takes one parameter <strong>n</strong>, as denoted within <code>| |</code>, and create a range which it will reduce to a single value, the product of all the values in the list. reduce, also known as inject in Ruby and foldl in Haskell, is a common and useful functional construct that supports unique iteration and accumulation through list-like data structures.</p>
+
+  </div>
+</div>
+
+<p><a href="/">On to something new &#187;</a></p>
+

@@ -1,0 +1,46 @@
+---
+layout: reference
+---
+<div class="box">
+  <h2>Introduction</h2>
+  <div class="block">
+    <p>
+      Welcome to cool ooc, a guide designed to comfortably introduce you to ooc, a new emerging language with lots of neat tricks under its sleeve.
+    </p>
+    <p>
+    This guide will assume familiarity with imperative programming languages such as C, C++, and Java. While functional ideas and constructs will be introduced, no prior knowledge in this area is required to understand what is going on.
+    </p>
+  </div>
+</div>
+
+<div class="box">
+  <h2>History</h2>
+  <div class="block">
+    <p>
+    ooc first began its journey as a hack to support classes in C. It was written in Java and translated to C source code.
+    </p>
+    
+    {% highlight java %}
+public class Main extends Parent implements Interface {
+  public static void main(String[] args) {
+    String output = "Hello World"
+    System.out.println(output);
+  }
+}{% endhighlight %}
+
+    <p>
+   The syntax above is more verbose and less expressive than what it should be. ooc borrows from the good parts of Java, such as its object-oriented design, and improves upon expressiveness and concision.
+    </p>
+
+    <p>
+    C provides little abstraction built-in. It is said to be fast because there is little overhead when writing naive C code. However, for more complex apps, levels of abstraction inevitably get built, and the low-levelness of C gets in the way more than it helps. Besides, not everyone is good at designing and implementing good abstractions. Does that mean C is bad? No. Does that mean we shouldn't use C? Not exactly. Let us use C to run our code, but lets use something more flexible to write our code. Let us build abstractions in ooc!
+    </p>
+
+    <p>
+    As more powerful language features were introduced, the idea of compiling ooc in itself became more fathomable. On April 20, 2010, a bootstrap was written in C, and rock came to life. The self-hosting aspect of the language is evident through rock, the compiler written in ooc. j/ooc (the original translator written in Java) has been left between a rock and a hard place ever since. References to ooc target the language, while references to rock target the actual compiler that takes ooc code (typically .ooc file extension), translates it to c99 code, and then compiles it into a binary file using gcc,clang,tcc,etc ...
+    </p>
+
+  </div>
+</div>
+
+<p><a href="/started">Getting Started &#187;</a></p>
